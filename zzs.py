@@ -53,6 +53,7 @@ class Enemy:
 
 player = Player()
 enemy = Enemy()
+spec = 0
 
 def enemytype():
 	spec = random.randint(1,3)
@@ -62,24 +63,35 @@ def enemybehavior():
 		if player.ammo > 1:
 			if chance < 71:
 				return "b"
-			elif 70 < chance > 76:
+			elif 70 < chance < 76:
 				return "r"
 			else:
 				return "s"
 		else:
 			if chance < 61:
 				return "b"
-			elif 60 < chance > 71:
+			elif 60 < chance < 71:
 				return "r"
 			else:
 				return "s"
 	elif spec == 2:
-		pass
+		if chance < 71:
+			return "s"
+		elif 70 < chance < 91:
+			return "b"
+		else:
+			return "r"
 	else:
-		pass
+		if chance < 51:
+			return "s"
+		elif 50 < chance < 76:
+			return "b"
+		else:
+			return "r"
 
 
 while player.hp > 0 and enemy.hp > 0:
+	enemytype()
 	choice = input("((s)hoot / (b)lock / (r)eload) ")
 	if choice == "s":
 		player.shoot()
@@ -89,6 +101,16 @@ while player.hp > 0 and enemy.hp > 0:
 		player.reload()
 	else:
 		print("ENTER s,b  OR  r  (NO CAPS)")
+	enemychoice = enemybehavior()
+	if enemychoice == "s":
+		enemy.shoot()
+	elif enemychoice ==  "b":
+		enemy.block()
+	elif enemychoice == "r":
+		enemy.reload()
+	else:
+		print("oops")
+
 	player.stats()
 
 
