@@ -35,6 +35,7 @@ class Player(Character):
 
 class Enemy (Character):
 	def death(self):
+		super.death()
 		print("VICTORY. " + self.opponent.name + " KILLED " + self.name + ".")
 
 
