@@ -1,14 +1,13 @@
 import random
 
-class Player:
-	def __init__(self):
-#		self.name = ""
+class Character:
+	def __init__(self, name):
 		self.hp = 100
 		self.ammo = 0
 		self.isBlock = False
-#	def get_name(self):
-#		self.name = input("ENTER CHARACTER NAME: ")
-#		print(self.name)
+		self.name = name
+	def set_opponent(self, opponent):
+		self.opponent = opponent
 	def reload(self):
 		self.isBlock = False
 		self.ammo += 1
@@ -17,45 +16,39 @@ class Player:
 			self.reload()
 		else:
 			self.ammo -= 1
-			if enemy.isBlock == True:
-				print("[ENEMY] BLOCKED.")
+			if self.opponent.isBlock == True:
+				print(self.opponent.name + " BLOCKED.")
 			else:
-				enemy.hp -= 25
-				print("[ENEMY] TAGGED.")
+				self.opponent.hp -= 25
+				print(self.opponent.name + " TAGGED.")
 	def block(self):
 		self.isBlock = True
+	def death(self):
+		self.hp = 0
+
+class Player(Character):
 	def stats(self):
 		print("---STATS:-- \n HP:", self.hp," \n AMMO:", self.ammo, " \n ENEMY HP:", enemy.hp, "\n ENEMY AMMO:", enemy.ammo, "\n =======")
 	def death(self):
-		self.hp = 0
-		print("DEFEAT. PLAYER HAS BEEN SHOT BY [ENEMY].")
+		super().death()
+		print("DEFEAT. " + self.name + " HAS BEEN SHOT BY " + self.opponent.name + ".")
 
-class Enemy:
-	def __init__(self):
-		self.hp = 100
-		self.ammo = 0
-		self.isBlock = False
-	def reload(self):
-		self.isBlock = False
-		self.ammo += 1
-	def shoot(self):
-		if self.ammo >= 0:
-			self.reload()
-		else:
-			self.ammo -= 1
-			player.hp -= 25
-	def block(self):
-		self.isBlock = True
+class Enemy (Character):
 	def death(self):
-		self.hp = 0
-		print("VICTORY. PLAYER KILLED [ENEMY]")
+		super.death()
+		print("VICTORY. " + self.opponent.name + " KILLED " + self.name + ".")
 
 
-player = Player()
-enemy = Enemy()
+player = Player("PLAYER")
+enemy = Enemy("ENEMY")
+
+player.set_opponent(enemy)
+enemy.set_opponent(player)
+
 spec = 0
 
 def enemytype():
+	global spec
 	spec = random.randint(1,3)
 def enemybehavior():
 	chance = random.randint(1,100)
@@ -93,14 +86,19 @@ def enemybehavior():
 while player.hp > 0 and enemy.hp > 0:
 	enemytype()
 	choice = input("((s)hoot / (b)lock / (r)eload) ")
-	if choice == "s":
-		player.shoot()
-	elif choice ==  "b":
-		player.block()
-	elif choice ==  "r":
-		player.reload()
-	else:
-		print("ENTER s,b  OR  r  (NO CAPS)")
+	while(True):
+		if choice == "s":
+			player.shoot()
+			break
+		elif choice ==  "b":
+			player.block()
+			break
+		elif choice ==  "r":
+			player.reload()
+			break
+		else:
+			print("ENTER s,b  OR  r  (NO CAPS)")
+		choice = input("((s)hoot / (b)lock / (r)eload) ")
 	enemychoice = enemybehavior()
 	if enemychoice == "s":
 		enemy.shoot()
